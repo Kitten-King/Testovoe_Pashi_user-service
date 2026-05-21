@@ -7,6 +7,7 @@ import (
 	"Testovoe_Pashi_user-service/internal/db"
 	userHttp "Testovoe_Pashi_user-service/internal/delivery/http"
 	"Testovoe_Pashi_user-service/internal/kafka"
+	"Testovoe_Pashi_user-service/internal/repository"
 
 	"github.com/gorilla/mux"
 )

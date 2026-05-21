@@ -1,0 +1,3 @@
+DROP TABLE IF EXISTS testovoe.user;
+DROP TABLE IF EXISTS testovoe.city;
+DROP SCHEMA IF EXISTS testovoe;

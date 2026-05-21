@@ -1,0 +1,33 @@
+services:
+  user-db:
+    image: postgres:15-alpine
+    container_name: user-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-user_db}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - user-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-user_db}"]
+      interval: 3s
+      timeout: 3s
+      retries: 5
+
+  user-migrator:
+    image: migrate/migrate:v4.16.2
+    container_name: user-migrator
+    volumes:
+      - ./migrations:/migrations
+    command:
+      - -path=/migrations
+      - -database=postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@user-db:5432/${POSTGRES_DB:-user_db}?sslmode=disable
+      - up
+    depends_on:
+      user-db:
+        condition: service_healthy
+
+volumes:
+  user-pgdata:
