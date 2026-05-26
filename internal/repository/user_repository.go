@@ -27,6 +27,12 @@ func (r *UserRepository) CreateUser(ctx context.Context, user *user_sdk.User) er
 	return r.db.QueryRowContext(ctx, query, user.Name, user.CityID).Scan(&user.UserID)
 }
 
+func (r *UserRepository) UpdateUserCity(ctx context.Context, userID, cityID int) error {
+	query := `UPDATE testovoe.user SET city_id = $1 WHERE user_id = $2`
+	_, err := r.db.ExecContext(ctx, query, cityID, userID)
+	return err
+}
+
 func (r *UserRepository) GetByID(ctx context.Context, id int) (*user_sdk.UserWithCity, error) {
 	var user user_sdk.UserWithCity
 	query := "SELECT u.user_id, u.name, u.city_id, c.city_name, c.latitude, c.longitude FROM testovoe.user u JOIN testovoe.city c ON u.city_id = c.city_id WHERE u.user_id = $1"
